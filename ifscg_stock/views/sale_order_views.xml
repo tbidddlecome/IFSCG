@@ -7,10 +7,22 @@
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']//form//field[@name='product_id']" position="after">
-                <field name="customer_product_code"/>
+                <field name="customer_product_id" context="{'default_partner_id': parent.partner_id, 'default_product_id': product_id}" domain="[('partner_id', '=', parent.partner_id)]" options="{'no_create_edit': 1}">
+<!--                    <form>-->
+<!--                        <field name="product_id"/>-->
+<!--                        <field name="partner_id" readonly="1"/>-->
+<!--                        <field name="name"/>-->
+<!--                    </form>-->
+                </field>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="after">
-                <field name="customer_product_code"/>
+                <field name="customer_product_id" context="{'default_partner_id': parent.partner_id, 'default_product_id': product_id}" domain="[('partner_id', '=', parent.partner_id)]" options="{'no_create_edit': 1}">
+<!--                    <form>-->
+<!--                        <field name="product_id"/>-->
+<!--                        <field name="partner_id" readonly="1"/>-->
+<!--                        <field name="name"/>-->
+<!--                    </form>-->
+                </field>
             </xpath>
 
         </field>
