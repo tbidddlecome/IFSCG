@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       <record id="product_uom_case" model="uom.uom">
+            <field name="name">Case</field>
+            <field name="factor">1000</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="uom_type">smaller</field>
+        </record>
+        <record id="product_uom_pound" model="uom.uom">
+            <field name="name">pound</field>
+            <field name="category_id" ref="uom.product_uom_categ_kgm"/>
+            <field name="factor">1000</field>
+            <field name="uom_type">smaller</field>
+        </record>
+    </data>
+</odoo>
