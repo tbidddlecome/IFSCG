@@ -6,23 +6,18 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="priority">100</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='order_line']//form//field[@name='product_qty']/.." position="before">
-                <label for="case" string="Case"/>
-                <div>
-                    <field name="case" class="oe_inline"/>
-                </div>
-            </xpath>
-            <xpath expr="//field[@name='order_line']//form//field[@name='product_qty']/.." position="after">
-                <label for="volume" string="Volume"/>
-                <div>
-                    <field name="volume" class="oe_inline"/>
-                </div>
+            <xpath expr="//field[@name='order_line']//form//field[@name='product_id']" position="after">
+	      <field name="case"/>
+	      <field name="volume"/>
+	      <field name="total_weight"/>
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='product_qty']" position="before">
                 <field name="case" />
             </xpath>
             <xpath expr="//field[@name='order_line']//tree//field[@name='product_qty']" position="after">
-                <field name="volume" />
+	      <field name="product_uom"/>
+	      <field name="volume" />
+	      <field name="total_weight" />
             </xpath>
         </field>
     </record>

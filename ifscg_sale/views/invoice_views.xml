@@ -10,7 +10,8 @@
                 <field name="case" />
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='quantity']" position="after">
-                <field name="volume" />
+              <field name="volume" />
+	      <field name="total_weight"/>
             </xpath>
         </field>
     </record>
@@ -24,7 +25,9 @@
                 <field name="case" />
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='quantity']" position="after">
-                <field name="volume" />
+	      <field name="product_uom"/>
+	      <field name="volume" />
+	      <field name="total_weight"/>
             </xpath>
         </field>
     </record>

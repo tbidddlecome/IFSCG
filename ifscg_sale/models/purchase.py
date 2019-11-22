@@ -8,7 +8,8 @@ from odoo.exceptions import ValidationError
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    volume = fields.Float(string="Volume", compute="_compute_volume", store=True)
+    volume = fields.Float(string="Volume", compute="_compute_product_info", store=True)
+    total_weight = fields.Float(string="Total Weight", compute="_compute_product_info", store=True)
     case = fields.Float(string="Cases")
 
     @api.onchange('case', 'product_id')
@@ -25,7 +26,8 @@ class PurchaseOrderLine(models.Model):
         if self.case > 0 and self.product_qty != product_qty:
             raise ValidationError(_('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value'))
 
-    @api.depends('case', 'product_id', 'product_id.volume')
-    def _compute_volume(self):
+    @api.depends('case', 'product_id', 'product_id.volume', 'product_id.weight')
+    def _compute_product_info(self):
         for rec in self:
             rec.volume = rec.case * rec.product_id.volume
+            rec.total_weight = rec.case * rec.product_id.weight
