@@ -21,7 +21,7 @@ class SaleOrderLine(models.Model):
         # self.product_uom = self.product_id.weight_for_so > 1 and product_uom_pound or product_uom_case
 
     @api.onchange('product_uom_qty')
-    def onchange_case(self):
+    def onchange_product_uom_qty_case(self):
         # product_uom_qty = self.case * self.product_id.weight_for_so
         if self.case > 0 and self.product_uom_qty != self._origin.product_uom_qty:
             warning_mess = {
