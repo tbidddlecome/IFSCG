@@ -23,7 +23,7 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_uom_qty')
     def onchange_product_uom_qty_case(self):
         # product_uom_qty = self.case * self.product_id.weight_for_so
-        if self.case > 0 and self.product_uom_qty != self._origin.product_uom_qty:
+        if self.case > 0 and self.product_uom_qty != self.case * self.product_id.weight_for_so:
             warning_mess = {
                 'title': _('Warning'),
                 'message': _('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value') 
