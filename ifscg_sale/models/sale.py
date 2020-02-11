@@ -49,5 +49,4 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
         res['case'] = self.case
-        res['volume'] = self.volume
         return res

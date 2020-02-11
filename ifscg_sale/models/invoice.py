@@ -19,12 +19,23 @@ class AccountInvoiceLine(models.Model):
         # product_uom_pound = self.env.ref('ifscg_sale.product_uom_pound').id
         # self.uom_id = self.product_id.weight_for_so > 1 and product_uom_pound or product_uom_case
 
-    @api.one
-    @api.constrains('case', 'quantity')
-    def validate_ordered_qty(self):
-        quantity = self.case * self.product_id.weight_for_so
-        if self.case > 0 and self.quantity != quantity:
-            raise ValidationError(_('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value'))
+    @api.onchange('case', 'quantity')
+    def onchange_quantity_case(self):
+        # product_uom_qty = self.case * self.product_id.weight_for_so
+        if self.case > 0 and self.quantity != self.case * self.product_id.weight_for_so:
+            warning_mess = {
+                'title': _('Warning'),
+                'message': _('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value') 
+            }
+            return {'warning': warning_mess}
+        return {}
+        
+    # @api.one
+    # @api.constrains('case', 'quantity')
+    # def validate_ordered_qty(self):
+    #     quantity = self.case * self.product_id.weight_for_so
+    #     if self.case > 0 and self.quantity != quantity:
+    #         raise ValidationError(_('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value'))
 
     @api.depends('case', 'product_id', 'product_id.volume', 'product_id.weight')
     def _compute_product_info(self):
@@ -39,7 +50,7 @@ class AccountInvoice(models.Model):
     def _prepare_invoice_line_from_po_line(self, line):
         data = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(line)
         data['case'] = line.case
-        data['volume'] = line.volume
-        data['total_weight'] = line.total_weight
+        # data['volume'] = line.volume
+        # data['total_weight'] = line.total_weight
         
         return data
