@@ -5,6 +5,17 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    total_weight_sum = fields.Float(string="Total Weight Sum", compute='_compute_total_weight_sum', store=True)
+
+    @api.depends('order_line', 'order_line.total_weight')
+    def _compute_total_weight_sum(self):
+        for order in self:
+            order.total_weight_sum = sum(order.order_line.mapped('total_weight'))
+
+
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 

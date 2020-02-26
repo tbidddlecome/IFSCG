@@ -5,13 +5,22 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    total_weight_sum = fields.Float(string="Total Weight Sum", compute='_compute_total_weight_sum', store=True)
+
+    @api.depends('order_line', 'order_line.total_weight')
+    def _compute_total_weight_sum(self):
+        for order in self:
+            order.total_weight_sum = sum(order.order_line.mapped('total_weight'))
+    
 class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
+    _inherit = 'sale.order.line'
 
     volume = fields.Float(string="Volume", compute="_compute_product_info", store=True)
     total_weight = fields.Float(string="Total Weight", compute='_compute_product_info', store=True)
-    case = fields.Float(string="Cases")
-    
+    case = fields.Float(string="Cases")    
 
     @api.onchange('case', 'product_id')
     def onchange_case(self):
