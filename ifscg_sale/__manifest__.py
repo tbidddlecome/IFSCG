@@ -8,7 +8,7 @@
     'summary': 'IFSCG Calculate Qty on Sale',
     'license': 'OEEL-1',
     'website': 'https://www.odoo.com',
-    'depends': ['sale_management', 'purchase', 'account', 'stock'],
+    'depends': ['sale_management', 'purchase', 'account', 'stock', 'ifscg_stock'],
     'version': '1.0',
     'description': """
 IFSCG Calculate Qty

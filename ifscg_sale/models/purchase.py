@@ -5,10 +5,22 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    total_weight_sum = fields.Float(string="Total Weight Sum", compute='_compute_total_weight_sum', store=True)
+
+    @api.depends('order_line', 'order_line.total_weight')
+    def _compute_total_weight_sum(self):
+        for order in self:
+            order.total_weight_sum = sum(order.order_line.mapped('total_weight'))
+
+
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    volume = fields.Float(string="Volume", compute="_compute_volume", store=True)
+    volume = fields.Float(string="Volume", compute="_compute_product_info", store=True)
+    total_weight = fields.Float(string="Total Weight", compute="_compute_product_info", store=True)
     case = fields.Float(string="Cases")
 
     @api.onchange('case', 'product_id')
@@ -18,14 +30,19 @@ class PurchaseOrderLine(models.Model):
         # product_uom_pound = self.env.ref('ifscg_sale.product_uom_pound').id
         # self.product_uom = self.product_id.weight_for_so > 1 and product_uom_pound or product_uom_case
 
-    @api.one
-    @api.constrains('case', 'product_qty')
-    def validate_ordered_qty(self):
-        product_qty = self.case * self.product_id.weight_for_so
-        if self.case > 0 and self.product_qty != product_qty:
-            raise ValidationError(_('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value'))
-
-    @api.depends('case', 'product_id', 'product_id.volume')
-    def _compute_volume(self):
+    @api.onchange('product_qty', 'case')
+    def onchange_product_qty_case(self):
+        # product_uom_qty = self.case * self.product_id.weight_for_so
+        if self.case > 0 and self.product_qty != self.case * self.product_id.weight_for_so:
+            warning_mess = {
+                'title': _('Warning'),
+                'message': _('The calculated ordered quantity has been modified, if you need to recalculate the ordered quantity then you have to modify the Cases value') 
+            }
+            return {'warning': warning_mess}
+        return {}
+        
+    @api.depends('case', 'product_id', 'product_id.volume', 'product_id.weight')
+    def _compute_product_info(self):
         for rec in self:
             rec.volume = rec.case * rec.product_id.volume
+            rec.total_weight = rec.case * rec.product_id.weight
